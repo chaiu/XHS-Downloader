@@ -1,0 +1,21 @@
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: '17 0 1 * *' # 每天北京时间 08:17
+  workflow_dispatch: # 也支持手动运行
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync fork
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/merge-upstream" \
+            -f branch=master
